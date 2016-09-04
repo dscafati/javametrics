@@ -5,13 +5,25 @@ apply plugin: 'application'
 repositories {
     mavenCentral()
 }
-mainClassName = "com.maxnesting.Main"
+mainClassName = "com.javametrics.Main"
 
 dependencies {
     // https://mvnrepository.com/artifact/com.github.javaparser/javaparser-core
     compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.5.1'
-
 }
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Java Metrics',
+                'Implementation-Version': '1.0',
+                'Main-Class': 'com.javametrics.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 
 sourceSets {
     main.java.srcDir "src"
